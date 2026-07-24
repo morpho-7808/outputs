@@ -31,7 +31,7 @@ let W,H,dpr, running=true, time=0, s={}, E0=0, view={x:0,y:0,l1:0,l2:0};
 const $=id=>document.getElementById(id), n=id=>Number($(id).value);
 function fitView(){if(!s.l1)return;const reach=s.l1+s.l2,margin=36,scale=Math.min((W-margin*2)/(reach*2),(H-margin*2)/(reach*2));view={x:W/2,y:H/2,l1:s.l1*scale,l2:s.l2*scale}}
 function resize(){const r=canvas.getBoundingClientRect();dpr=devicePixelRatio||1; W=r.width;H=r.height;for(const c of [canvas,trail]){c.width=W*dpr;c.height=H*dpr;c.getContext('2d').setTransform(dpr,0,0,dpr,0,0)}draw();}
-function reset(){resize();s={l1:n('l1'),l2:n('l2'),m1:n('m1'),m2:n('m2'),g:n('g'),a1:n('a1')*Math.PI/180,a2:n('a2')*Math.PI/180,v1:n('speed'),v2:n('speed')};time=0;E0=energy(s);fitView();tctx.clearRect(0,0,W,H);draw();}
+function reset(){resize();s={l1:n('l1'),l2:n('l2'),m1:n('m1'),m2:n('m2'),g:n('g')*1000,a1:n('a1')*Math.PI/180,a2:n('a2')*Math.PI/180,v1:n('speed'),v2:n('speed')};time=0;E0=energy(s);fitView();tctx.clearRect(0,0,W,H);draw();}
 function pos(){const {x,y,l1,l2}=view;return {x,y,x1:x+l1*Math.sin(s.a1),y1:y+l1*Math.cos(s.a1),x2:x+l1*Math.sin(s.a1)+l2*Math.sin(s.a2),y2:y+l1*Math.cos(s.a1)+l2*Math.cos(s.a2)}}
 function derivative(q){let {m1,m2,l1,l2,g}=s,{a1,a2,v1,v2}=q,d=2*m1+m2-m2*Math.cos(2*a1-2*a2);let av1=(-g*(2*m1+m2)*Math.sin(a1)-m2*g*Math.sin(a1-2*a2)-2*Math.sin(a1-a2)*m2*(v2*v2*l2+v1*v1*l1*Math.cos(a1-a2)))/(l1*d);let av2=(2*Math.sin(a1-a2)*(v1*v1*l1*(m1+m2)+g*(m1+m2)*Math.cos(a1)+v2*v2*l2*m2*Math.cos(a1-a2)))/(l2*d);return {a1:v1,a2:v2,v1:av1,v2:av2};}
 function plus(q,k,h){return {a1:q.a1+k.a1*h,a2:q.a2+k.a2*h,v1:q.v1+k.v1*h,v2:q.v2+k.v2*h};}
